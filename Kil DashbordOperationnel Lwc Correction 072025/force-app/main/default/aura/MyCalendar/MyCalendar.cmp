@@ -1,0 +1,112 @@
+<!-- Lignting page : composants modifiables dans l'app builder-->
+<aura:component access="global"
+    implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:appHostable"
+    controller="MyEventCalCtrl">
+    <ltng:require
+        scripts="{!join(',', $Resource.MyCalendar + '/moment.min.js', $Resource.MyCalendar + '/moment-timezone.min.js', $Resource.MyCalendar + '/jquery.min.js', $Resource.MyCalendar + '/fullcalendar.min.js')}" />
+
+    <aura:attribute name="listFieldsToQuery" type="String" access="global" />
+    <aura:attribute name="sObjectLabel" type="String" default="Affectation" access="global" />
+    <aura:attribute name="sObjectName" type="String" default="Affectation__c" access="global" />
+    <aura:attribute name="titleField" type="String" default="Titre__c" access="global" />
+    <aura:attribute name="numeroField" type="String" default="Name" access="global" />
+    <aura:attribute name="startDateTimeField" type="String" default="DateDeDebut__c" access="global" />
+    <aura:attribute name="endDateTimeField" type="String" default="DateDeFin__c" access="global" />
+    <aura:attribute name="durationValueField" type="String" default="NombreJours__c" access="global" />
+    <aura:attribute name="durationUniteField" type="String" default="TypeAffaire__c" access="global" />
+    <aura:attribute name="descriptionField" type="String" default="Description__c" access="global" />
+    <aura:attribute name="userField" type="String" default="OwnerId" access="global" />
+    <aura:attribute name="filterByTiersField" type="Boolean" default="true" access="global" />
+    <aura:attribute name="tiersField" type="String" default="Tiers__c" access="global" />
+    <aura:attribute name="filterByAffaireField" type="Boolean" default="true" access="global" />
+    <aura:attribute name="affaireField" type="String" default="Affaire__c" access="global" />
+    <aura:attribute name="affaireNameField" type="String" default="AffaireName__c" access="global" />
+    <aura:attribute name="filterByLAffaireField" type="Boolean" default="true" access="global" />
+    <aura:attribute name="laffaireField" type="String" default="Tache__c" access="global" />
+    <aura:attribute name="laffaireNameField" type="String" default="LigneDeTacheName__c" access="global" />
+    <!-- Obsolete, plus utilisé -->
+    <aura:attribute name="tacheNameField" type="String" default="Ne pas écrire ici" access="global" />
+    <aura:attribute name="filterByRessourceHumaineField" type="Boolean" default="true" access="global" />
+    <aura:attribute name="ressourceHumaineField" type="String" default="RessourceHumaine__c" access="global" />
+    <aura:attribute name="ressourceHumaineTrigrammeField" type="String" default="RessourceHumaineTrigramme__c"
+        access="global" />
+    <aura:attribute name="ressourceHumaineFullNameField" type="String" default="RessourceHumaineName__c"
+        access="global" />
+    <aura:attribute name="ressourceHumaineRecordTypeField" type="String" default="RessourceHumaineRecordType__c"
+        access="global" />
+    <aura:attribute name="ressourceHumaineTiersField" type="String" default="RessourceHumaineTiersName__c"
+        access="global" />
+
+    <aura:attribute name="filterByRessourceMaterielleField" type="Boolean" default="true" access="global" />
+    <aura:attribute name="ressourceMaterielleField" type="String" default="RessourceMaterielle__c"
+        access="global" />
+    <aura:attribute name="ressourceMaterielleNameField" type="String" default="RessourceMaterielleName__c"
+        access="global" />
+    <aura:attribute name="ressourceMaterielleRecordTypeField" type="String"
+        default="RessourceMaterielleRecordType__c" access="global" />
+    <aura:attribute name="eventsMap" type="Map" access="global" />
+    <aura:attribute name="calendarButtons" type="String" access="global" />
+    <aura:attribute name="weekends" type="Boolean" default="true" access="global" />
+    <aura:attribute name="eventValidationField" type="String" default="Validation__c" access="global" />
+    <aura:attribute name="locationField" type="String" default="Lieu__c" access="global" />
+    <aura:attribute name="previsionnelColor" type="String" default="#666666" access="global" />
+    <aura:attribute name="eventBackgroundColor" type="String" access="global" />
+    <aura:attribute name="eventBorderColor" type="String" access="global" />
+    <aura:attribute name="eventTextColor" type="String" access="global" />
+    <aura:attribute name="eventBackgroundColorField" type="String" default="CodeCouleur__c" access="global" />
+    <aura:attribute name="filterEventBorderColorByRessourceType" type="Boolean" default="true" access="global" />
+    <aura:attribute name="textBeforeIcons" type="String" default="startTime" access="global" />
+    <aura:attribute name="splitEventsOnNonWorkedDays" type="Boolean" default="true" access="global" />
+
+
+    <aura:attribute name="isThisRecordARHWithoutAnyActivePosteDeCarriere" type="Boolean" default="false"
+        access="global" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <!-- <p style="font-size: larger; color:red">MyCalendar</p> -->
+    <aura:if isTrue="{!v.isThisRecordARHWithoutAnyActivePosteDeCarriere}">
+        <div class="slds">
+            <div class="slds-card">
+                <c:AffectationCalendar objectLabel="{!v.sObjectLabel}" mainRecordId="{!v.recordId}"
+                    events="{!v.eventsMap}" sObjectName="{!v.sObjectName}" calendarButtons="{!v.calendarButtons}"
+                    weekends="{!v.weekends}" textBeforeIcons="{!v.textBeforeIcons}"
+                    startDateTimeField="{!v.startDateTimeField}" endDateTimeField="{!v.endDateTimeField}"
+                    filterByTiersField="{!v.filterByTiersField}" tiersField="{!v.tiersField}"
+                    affaireField="{!v.affaireField}" filterByAffaireID="{!v.filterByAffaireField}"
+                    filterByLAffaireID="{!v.filterByLAffaireField}" laffaireField="{!v.laffaireField}"
+                    filterByRessourceHumaineField="{!v.filterByRessourceHumaineField}"
+                    ressourceHumaineField="{!v.ressourceHumaineField}"
+                    filterByRessourceMaterielleField="{!v.filterByRessourceMaterielleField}"
+                    ressourceMaterielleField="{!v.ressourceMaterielleField}"
+                    borderfilterFromRessource="{!filterEventBorderColorByRessourceType}"
+                    splitEventsOnNonWorkedDays="{!v.splitEventsOnNonWorkedDays}"
+                    listFieldsToQuery="{!v.listFieldsToQuery}" previsionnelColor="{!v.previsionnelColor}" />
+            </div>
+        </div>
+         <!--<p style="font-size:larger;color:red;">
+            Ce salarié n'a pas de poste de carrière actif, vous ne pouvez donc pas
+            la sélectionner pour une affectation.
+        </p>-->
+        <aura:set attribute="else">
+            <div class="slds">
+                <div class="slds-card">
+                    <c:AffectationCalendar objectLabel="{!v.sObjectLabel}" mainRecordId="{!v.recordId}"
+                        events="{!v.eventsMap}" sObjectName="{!v.sObjectName}" calendarButtons="{!v.calendarButtons}"
+                        weekends="{!v.weekends}" textBeforeIcons="{!v.textBeforeIcons}"
+                        startDateTimeField="{!v.startDateTimeField}" endDateTimeField="{!v.endDateTimeField}"
+                        filterByTiersField="{!v.filterByTiersField}" tiersField="{!v.tiersField}"
+                        affaireField="{!v.affaireField}" filterByAffaireID="{!v.filterByAffaireField}"
+                        filterByLAffaireID="{!v.filterByLAffaireField}" laffaireField="{!v.laffaireField}"
+                        filterByRessourceHumaineField="{!v.filterByRessourceHumaineField}"
+                        ressourceHumaineField="{!v.ressourceHumaineField}"
+                        filterByRessourceMaterielleField="{!v.filterByRessourceMaterielleField}"
+                        ressourceMaterielleField="{!v.ressourceMaterielleField}"
+                        borderfilterFromRessource="{!filterEventBorderColorByRessourceType}"
+                        splitEventsOnNonWorkedDays="{!v.splitEventsOnNonWorkedDays}"
+                        listFieldsToQuery="{!v.listFieldsToQuery}" previsionnelColor="{!v.previsionnelColor}" />
+                </div>
+            </div>
+        </aura:set>
+    </aura:if>
+</aura:component>

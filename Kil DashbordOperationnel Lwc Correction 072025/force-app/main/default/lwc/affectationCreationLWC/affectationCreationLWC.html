@@ -1,0 +1,239 @@
+<!-- Using the c-lookup from https://github.com/pozil/sfdc-ui-lookup-lwc -->
+<!-- http://sfdcmonkey.com/2017/07/17/re-usable-custom-lookup/ -->
+<template>
+    <lightning-card>
+        <!-- On fait une présentation différente selon comment le composant est appelé -->
+        <template if:true={editMode}>
+            <div slot="title">
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_1-of-10">
+                        <span class="slds-icon_container slds-icon-standard-event" title="Affectation">
+                            <lightning-icon icon-name="standard:event" alternative-text="Event"></lightning-icon>
+                        </span>
+                    </div>
+                    <div class="slds-col slds-size_9-of-10 slds-m-vertical_small">
+                        <span>
+                            <div class="slds-page-header__title">{title}</div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template if:false={editMode}>
+            <div class="slds-media slds-m-horizontal_medium">
+                <div class="slds-media__figure">
+                    <span class="slds-icon_container slds-icon-standard-event" title="Affectation">
+                        <lightning-icon icon-name="standard:event" alternative-text="Event"></lightning-icon>
+                    </span>
+                </div>
+                <div class="slds-media__body">
+                    <div class="slds-page-header__name">
+                        <div class="slds-page-header__name-title">
+                            <h1>
+                                <span class="
+                                        slds-page-header__title
+                                        slds-truncate
+                                    " title="Création d'une affectation">{title}</span>
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <div class="slds-var-m-around_medium">
+            <div class="slds-box slds-m-bottom_x-small">
+                <p>
+                    Ressource
+                    <lightning-helptext icon-name="utility:info" content={ressourceTooltip}></lightning-helptext>
+                </p>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <c-lookup onsearch={handleRessourceSearch} label="Ressource"
+                            placeholder="Selectionnez une ressource..." required onselectionchange={updateRessourceId}
+                            data-id="ressourceSearch" selection={ressourceSelection}></c-lookup>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-box slds-m-bottom_x-small">
+                <p>Classification</p>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <c-lookup onsearch={handleTiersSearch} label="Tiers" placeholder="Selectionnez un tiers..."
+                            required onselectionchange={updateTiersID} data-id="tiersSearch" selection={tiersSelection}>
+                        </c-lookup>
+                    </div>
+                    <div class="slds-col">
+                        <c-lookup onsearch={handleAffairesSearch} label="Affaire"
+                            placeholder="Selectionnez une affaire..." required onselectionchange={updateAffaireID}
+                            data-id="affairesSearch" selection={affaireSelection} errors={affaireErrors}></c-lookup>
+                    </div>
+                </div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <c-lookup onsearch={handleLigneAffairesSearch} label="Ligne d'affaire"
+                            placeholder="Selectionnez une ligne de tâche..." required
+                            onselectionchange={updateligneAffaireID} data-id="ligneAffairesSearch"
+                            selection={ligneAffaireSelection}></c-lookup>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slds-box slds-m-bottom_x-small">
+                <p>Désignation</p>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <lightning-input label="Titre" onchange={updateTitre} data-id="Titre" value={Titre}>
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col">
+                        <lightning-input type="color" label="Couleur" onchange={updateCouleur} data-id="Couleur"
+                            value={Couleur} disabled={isCouleurReadOnly}>
+                        </lightning-input>
+                    </div>
+                </div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <lightning-textarea label="Description" placeholder="Écrivez vos commentaires ici..."
+                            onchange={updateDescription} value={Description}></lightning-textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slds-box slds-m-bottom_x-small">
+                <p>
+                    Délimitation
+                    <!-- <lightning-button variant="brand" label={switchSaisieButtonLabel} title="typeSaisie" -->
+                    <!-- onclick={switchInputMode} class="slds-m-left_x-small"></lightning-button> -->
+                </p>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <lightning-input label="Prévisionnel ?" type="checkbox" onchange={updatePrevisionnel}
+                            value={Previsionnel} checked={Previsionnel}>
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col">
+                        <lightning-input label="Sans Horaires" type="checkbox" onchange={updateAstreinte}
+                            value={Astreinte} checked={Astreinte}>
+                        </lightning-input>
+                    </div>
+                </div>
+                <template if:true={saisieHoraire}>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col">
+                            <lightning-input label="Date de début" type="date" onchange={updateHoraireDateDebut}
+                                value={HoraireDateDebut} data-id="HoraireDateDebut" min={minDateFromPC}
+                                max={maxDateFromPC}></lightning-input>
+                        </div>
+                        <div class="slds-col">
+                            <lightning-input label="Heure de début" type="time" placeholder="Entrez l'heure ici..."
+                                onchange={updateHoraireHeureDebut} value={HoraireHeureDebut}
+                                data-id="HoraireHeureDebut">
+                            </lightning-input>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col">
+                            <lightning-input label="Date de fin" type="date" onchange={updateHoraireDateFin}
+                                value={HoraireDateFin} data-id="HoraireJourFin" min={minDateFromPC} max={maxDateFromPC}>
+                            </lightning-input>
+                        </div>
+                        <div class="slds-col">
+                            <lightning-input label="Heure de fin" type="time" placeholder="Entrez l'heure ici..."
+                                onchange={updateHoraireHeureFin} value={HoraireHeureFin} data-id="HoraireHeureFin">
+                            </lightning-input>
+                        </div>
+                    </div>
+                    <div>
+                        <lightning-input label="Durée" type="string" placeholder={HoraireDureePlaceholder}
+                            value={HoraireDuree} read-only={IsDureeReadOnly} onchange={updateHoraireDuree}
+                            data-id="HoraireDuree">
+                        </lightning-input>
+                    </div>
+                </template>
+
+                <template if:false={saisieHoraire}>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col">
+                            <lightning-input label="Date de début" type="date" onchange={updateDateDebut}
+                                value={DateDebut} data-id="DateDebut" min={minDateFromPC} max={maxDateFromPC}>
+                            </lightning-input>
+                        </div>
+                        <div class="slds-col">
+                            <lightning-input label={labelDuree} type="number" placeholder="Entrez la durée ici..."
+                                onchange={updateDuree} value={Duree} step={stepDuree} data-id="JourDuree">
+                            </lightning-input>
+                        </div>
+                       <!--<template if:false={isDureeAnInteger}>-->
+                            <div class="slds-col">
+                                <lightning-combobox label="Heure de début" placeholder="Horaire" options={HeureOptions}
+                                    required onchange={updateHeureDebut} value={HeureDebut}
+                                    data-id="JourHoraireSelection"></lightning-combobox>
+                            </div>
+                        <!--</template>-->
+                    </div>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col">
+                            <lightning-input label="Date de fin" type="date" onchange={updateDateFin} value={DateFin}
+                                read-only>
+                            </lightning-input>
+                        </div>
+                        <div class="slds-col">
+                            <lightning-input label="Heure de fin" type="time" placeholder="Entrez l'heure ici..."
+                                onchange={updateHeureFin} value={HeureFin} read-only></lightning-input>
+                        </div>
+                    </div>
+                </template>
+                <div class="slds-col">
+                    <lightning-combobox label="Lieu" placeholder="Choisissez le lieu" options={lieuOptions} required
+                        onchange={updateLieu} value={Lieu} data-id="LieuSelection"></lightning-combobox>
+                </div>
+            </div>
+
+            <template if:true={showFacturation}>
+                <div class="slds-box slds-m-bottom_x-small">
+                    <p>Facturation</p>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col">
+                            <lightning-combobox label="Sans Dérapage" options={bLOptions} required
+                                onchange={updateBonDeLivraison} value={BonDeLivraison} ></lightning-combobox>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_1-of-4">
+                            <lightning-input type="number" label="Prix à la journée" onchange={updatePrix}
+                                data-id="PrixUnitaire" read-only={IsPrixReadOnly} value={Prix}></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-4">
+                            <lightning-input label="Devise"  
+                                data-id="Devise" value={Devise} read-only=True></lightning-input> <!--options={deviseOptions} required onchange={updateDevise}-->
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-input label="Libellé facture" onchange={updateLibelle} data-id="LibelleFacture"
+                                maxlength="60" value={Libelle}></lightning-input>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+        <div slot="footer">
+            <!-- The next button is hidden in edit mode -->
+            <template if:false={editMode}>
+                <lightning-button variant="brand" label="Enregistrer et revenir au planning" title="Créer"
+                    onclick={submitCreationAndClose} class="
+                        slds-float_left
+                        slds-m-horizontal_large
+                        slds-p-vertical_small
+                    " data-id="saveAndQuitButton">
+                </lightning-button>
+            </template>
+
+            <lightning-button variant="brand" label={labelSaveAndGoToRecord} title="Créer"
+                onclick={submitCreationAndGoToRecord} class="
+                    slds-float_right
+                    slds-m-horizontal_large
+                    slds-p-vertical_small
+                " data-id="saveAndGoButton">
+            </lightning-button>
+        </div>
+    </lightning-card>
+</template>

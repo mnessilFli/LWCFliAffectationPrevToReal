@@ -1,0 +1,92 @@
+<template>
+    <lightning-card title="Affectations à prévoir">
+        <!-- Navigation Mois -->
+        <div class="slds-grid slds-grid_align-center slds-m-around_medium">
+            <lightning-button-icon icon-name="utility:chevronleft"
+                                   alternative-text="Mois précédent"
+                                   onclick={handlePreviousMonth}>
+            </lightning-button-icon>
+
+            <div class="slds-text-heading_medium slds-m-horizontal_small">
+                Mois affiché : {displayedMonthLabel}
+            </div>
+
+            <lightning-button-icon icon-name="utility:chevronright"
+                                   alternative-text="Mois suivant"
+                                   onclick={handleNextMonth}>
+            </lightning-button-icon>
+        </div>
+
+        <!-- Spinner -->
+        <template if:true={loading}>
+            <div class="slds-align_absolute-center slds-p-vertical_medium">
+                <lightning-spinner size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Liste des affectations -->
+        <template if:false={loading}>
+            <template if:true={affectations.length}>
+                <div class="slds-p-horizontal_medium">
+                    <template for:each={affectations} for:item="aff">
+                        <div key={aff.Id} class="slds-box slds-m-vertical_x-small">
+                            <lightning-input type="checkbox"
+                                             checked={aff.isSelected}
+                                             data-id={aff.Id}
+                                             onchange={handleCheckboxChange}>
+                            </lightning-input>
+
+                            <p><strong>Affaire :</strong> {aff.AffaireName}</p>
+                            <p><strong>Tiers :</strong> {aff.TiersName}</p>
+                            <p><strong>Durée Totale à planifier :</strong> {aff.NombreJours__c} jours</p>
+                            <p><strong>Jours déjà planifiés :</strong> {aff.scheduledDays} jours</p>
+                            <p><strong>Restant à planifier :</strong> {aff.remainingDays} jours</p>
+                            <p><strong>Mois/Année :</strong> {aff.Mois__c}/{aff.Annee__c}</p>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Bouton d’action -->
+                <div class="slds-align_absolute-center slds-m-around_medium">
+                    <lightning-button variant="brand"
+                                      label="Ajouter au planning"
+                                      onclick={handleAddToPlanning}
+                                      disabled={isAddDisabled}>
+                    </lightning-button>
+                </div>
+            </template>
+
+            <template if:false={affectations.length}>
+                <div class="slds-align_absolute-center slds-p-around_medium">
+                    Aucune affectation de planification pour ce mois.
+                </div>
+            </template>
+        </template>
+    </lightning-card>
+
+    <!-- ============== MODALE ============== -->
+    <template if:true={showModal}>
+        <section class="slds-modal slds-fade-in-open" role="dialog" tabindex="-1">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 class="slds-text-heading_medium">Création d’une affectation</h2>
+                    <button class="slds-button slds-button_icon slds-modal__close"
+                            onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="Fermer" size="small"></lightning-icon>
+                    </button>
+                </header>
+
+                <div class="slds-modal__content slds-p-around_medium">
+                    <!-- composant existant -->
+                    <c-affectation-creation-l-w-c
+                        record-data={modalRecordData}
+                        onclosingcreationmodal={closeModal}
+                        onclosingcreationmodalandgotourl={closeModal}>
+                    </c-affectation-creation-l-w-c>
+                </div>
+            </div>
+        </section>
+
+        <div class="slds-backdrop slds-backdrop_open" onclick={closeModal}></div>
+    </template>
+</template>

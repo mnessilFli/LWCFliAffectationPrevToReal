@@ -1,0 +1,47 @@
+.THIS .myCalendar{
+    font-family: 'Salesforce Sans',Arial,sans-serif;
+}
+.THIS .fc-toolbar h2 {
+    margin: 0;
+    font-family: 'Salesforce Sans',Arial,sans-serif;
+    font-size: 1.5em;
+    line-height: 1.5;
+    color: rgb(143, 0, 0); /*22, 50, 92*/
+}
+.THIS button.fc-button {
+    text-transform: capitalize;
+}
+.THIS .fc-icon {
+    font-family: 'Salesforce Sans',Arial,sans-serif;
+}
+.THIS .slds-modal__content { /* Permet de scroll */
+    overflow-y: scroll !important;
+}
+/* A modifier en KIL au lieu de c si ca ne marche pas*/
+.THIS  span.tooltip {
+    position: absolute;
+    width: 100px;
+    height: 20px;
+    line-height: 20px;
+    padding: 10px;
+    font-size: 14px;
+    text-align: center;
+    color: rgb(124, 164, 177);
+    background: rgb(24, 26, 27);
+    border: 4px solid rgb(48, 52, 54);
+    border-radius: 5px;
+    text-shadow: rgba(0, 0, 0, 0.1) 1px 1px 1px;
+    box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 2px 0px;
+}
+
+.THIS span.tooltip:after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-width: 10px;
+    border-style: solid;
+    border-color: #FFFFFF transparent transparent transparent;
+    top: 44px;
+    left: 50px;
+}

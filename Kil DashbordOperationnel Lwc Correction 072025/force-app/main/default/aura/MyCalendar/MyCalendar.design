@@ -1,0 +1,79 @@
+<design:component label="MyCalendar">
+    <design:attribute name="sObjectLabel" label="sObject Label"
+        description="Label for Displaying the sObject, e.g. Event" />
+    <design:attribute name="sObjectName" label="sObject API Name" description="API Name of the sObject" />
+    <design:attribute name="titleField" label="Title Field API Name" description="API Name of the Title Field" />
+    <design:attribute name="numeroField" label="Affectation numero field"
+        description="API Name of the Affectation numero Field" />
+    <design:attribute name="startDateTimeField" label="Start DateTime Field API Name"
+        description="API Name of the Start DateTime Field" />
+    <design:attribute name="endDateTimeField" label="End DateTime Field API Name"
+        description="API Name of the End DateTime Field" />
+    <design:attribute name="durationValueField" label="duration value Field API Name"
+        description="API Name of the duration value Field" />
+    <design:attribute name="durationUniteField" label="affaire type Field API Name"
+        description="API Name of the affaire type Field" />
+    <design:attribute name="descriptionField" label="Description Field API Name"
+        description="API Name of the Description Field" />
+    <design:attribute name="userField" label="User Id Field API Name" description="API Name of the User Id Field" />
+    <design:attribute name="filterByTiersField" label="Filtrer par tiers ?"
+        description="Only display records that match the tiers" />
+    <design:attribute name="tiersField" label="Tiers field Name" description="API Name of the Tiers Field" />
+    <design:attribute name="filterByAffaireField" label="Filtrer par affaire ?"
+        description="Only display records that match the affaire" />
+    <design:attribute name="affaireField" label="Affaire field Name" description="API Name of the Affaire Field" />
+    <design:attribute name="affaireNameField" label="Affaire Name field"
+        description="API Name of the Affaire Name Field" />
+    <design:attribute name="filterByLAffaireField" label="Filtrer par ligne d'affaire ?"
+        description="Only display records that match the ligne d'affaire" />
+    <design:attribute name="laffaireField" label="Ligne Affaire field Name"
+        description="API Name of the Ligne Affaire Field" />
+    <design:attribute name="laffaireNameField" label="Ligne Affaire Name field"
+        description="API Name of the Ligne Affaire Name Field" />
+    <design:attribute name="filterByRessourceHumaineField" label="Filtrer par ressource"
+        description="Only display records that match the ressource humaine" />
+    <design:attribute name="ressourceHumaineField" label="Ressource humaine id field"
+        description="API Name of the Ressource Humaine Id Field" />
+    <design:attribute name="ressourceHumaineTrigrammeField" label="Ressource humaine trigramme field"
+        description="API Name of the Ressource Humaine trigramme Field" />
+    <design:attribute name="ressourceHumaineFullNameField" label="Ressource humaine name field"
+        description="API Name of the Ressource Humaine name Field" />
+    <design:attribute name="ressourceHumaineRecordTypeField" label="Ressource humaine record Type field"
+        description="Record Type field of the ressource humaine" />
+    <design:attribute name="ressourceHumaineTiersField" label="Ressource humaine tiers name field"
+        description="Name of the tiers of the ressource humaine" />
+    <design:attribute name="filterByRessourceMaterielleField" label="Filtrer par ressource matérielle ?"
+        description="Only display records that match the ressource materielle" />
+    <design:attribute name="ressourceMaterielleField" label="Ressource matérielle field Name"
+        description="API Name of the ressource matérielle Field" />
+    <design:attribute name="ressourceMaterielleNameField" label="Ressource materielle name field"
+        description="API Name of the Ressource Materielle Name Field" />
+    <design:attribute name="ressourceMaterielleRecordTypeField" label="Ressource materielle record type field"
+        description="API Name of the Ressource Materielle record Type Field" />
+
+
+    <design:attribute name="calendarButtons" label="Buttons shown on Calendar"
+        default="apex://MyCalendarButtonsPicklist" />
+    <design:attribute name="weekends" label="Display Weekends"
+        description="Whether to include Saturday/Sunday columns in any of the calendar views" />
+    <design:attribute name="eventValidationField" label="Champ de validation"
+        description="Nom (API name) du champ de validation" />
+    <design:attribute name="eventBackgroundColorField" label="Champ de couleur"
+        description="Nom (API name) du champ de la couleur de remplissage" />
+    <design:attribute name="previsionnelColor" label="Previsionnel color" description="Color of a previsionnel event" />
+    <design:attribute name="filterEventBorderColorByRessourceType" label="Contours typés"
+        description="La couleur des contours differe selon la nature de la ressource de l'affectation" />
+    <design:attribute name="eventBackgroundColor" label="Background Color of Event"
+        description="Background Color of Event displayed on Calendar" />
+    <design:attribute name="eventBorderColor" label="Border Color of Event"
+        description="Border Color of Event displayed on Calendar" />
+    <design:attribute name="eventTextColor" label="Text Color of Event"
+        description="Text Color of Event displayed on Calendar" />
+    <design:attribute name="textBeforeIcons" label="Display before icons"
+        description="What would you like to display before icons ? 'startTime' OR 'duree'" />
+    <design:attribute name="splitEventsOnNonWorkedDays" label="Split events on non-worked days ?"
+        description="Do you want to split events that goes through worked days ?" />
+    <!-- Obsolete, plus utilisé -->
+    <design:attribute name="tacheNameField" label="Ne pas remplir ce champ"
+        description="Ce champ est obsolete et le remplir ne fera rien" />
+</design:component>

@@ -1,0 +1,93 @@
+<!-- A faire : Utiliser les event sources (https://fullcalendar.io/docs/v3/events-function) pour récupérer les events ET les holidays à chaque render -->
+<!-- Unfocus lorsque le perso change de date (parceque ca va plus vite pourquoi pas) -->
+<aura:component controller="MyEventCalCtrl"
+    implements="flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes" access="global">
+    <ltng:require
+        scripts="{!join(',', $Resource.MyCalendar + '/moment.min.js', $Resource.MyCalendar + '/moment-timezone.min.js', $Resource.MyCalendar + '/jquery.min.js', $Resource.MyCalendar + '/fullcalendar.min.js')}"
+        styles="{!$Resource.MyCalendar + '/fullcalendar.min.css'}" afterScriptsLoaded="{!c.launchCalendar}" />
+
+    <aura:attribute name="events" type="Map" />
+    <aura:attribute name="recordData" type="String" />
+    <aura:attribute name="objectLabel" type="String" default="Affectation" access="global" />
+    <aura:attribute name="sObjectName" type="String" default="Affectation__c" access="global" />
+    <aura:attribute name="calendarButtons" type="String" />
+    <aura:attribute name="weekends" type="Boolean" />
+    <aura:attribute name="eventBackgroundColor" type="String" />
+    <aura:attribute name="eventBorderColor" type="String" />
+    <aura:attribute name="eventTextColor" type="String" />
+    <aura:attribute name="textBeforeIcons" type="String" />
+
+    <aura:attribute name="mainRecordId" type="String" />
+
+    <aura:attribute name="baseUrl" type="String" />
+
+    <aura:attribute name="idVal" type="String" />
+    <aura:attribute name="titleVal" type="String" />
+    <aura:attribute name="descriptionVal" type="String" />
+    <aura:attribute name="startDateTimeVal" type="DateTime" />
+    <aura:attribute name="endDateTimeVal" type="DateTime" />
+    <aura:attribute name="newOrEdit" type="String" default="New" />
+    <aura:attribute name="workedDaysCalendar" type="String" default="" />
+
+    <aura:attribute name="listFieldsToQuery" type="String" access="global" />
+    <!-- <aura:attribute name="titleField" type="String" default="Titre__c" access="global" />
+    <aura:attribute name="numeroField" type="String" default="Name" access="global" /> -->
+    <aura:attribute name="startDateTimeField" type="String" default="DateDeDebut__c" access="global" />
+    <aura:attribute name="endDateTimeField" type="String" default="DateDeFin__c" access="global" />
+    <!-- <aura:attribute name="durationValueField" type="String" default="NombreJours__c" access="global" />
+    <aura:attribute name="durationUniteField" type="String" default="TypeAffaire__c" access="global" />
+    <aura:attribute name="descriptionField" type="String" default="Description__c" access="global" />
+    <aura:attribute name="userField" type="String" default="OwnerId" access="global" /> -->
+    <aura:attribute name="filterByTiersField" type="Boolean" default="true" access="global" />
+    <aura:attribute name="tiersField" type="String" default="Tiers__c" access="global" />
+    <aura:attribute name="affaireField" type="String" default="Affaire__c" access="global" />
+    <!-- <aura:attribute name="affaireNameField" type="String" default="AffaireName__c" access="global" /> -->
+    <aura:attribute name="filterByAffaireID" type="Boolean" default="true" access="global" />
+    <aura:attribute name="filterByLAffaireID" type="Boolean" default="true" access="global" />
+    <aura:attribute name="laffaireField" type="String" default="Tache__c" access="global" />
+    <!-- <aura:attribute name="laffaireNameField" type="String" default="LigneDeTacheName__c" access="global" /> -->
+    <aura:attribute name="filterByRessourceHumaineField" type="Boolean" default="true" access="global" />
+    <aura:attribute name="ressourceHumaineField" type="String" default="RessourceHumaine__c" access="global" />
+    <!-- <aura:attribute name="ressourceHumaineTrigrammeField" type="String" default="RessourceHumaineTrigramme__c"
+        access="global" />
+    <aura:attribute name="ressourceHumaineFullNameField" type="String" default="RessourceHumaineName__c"
+        access="global" />
+    <aura:attribute name="ressourceHumaineRecordTypeField" type="String" default="RessourceHumaineRecordType__c"
+        access="global" /> -->
+    <aura:attribute name="filterByRessourceMaterielleField" type="Boolean" default="true" access="global" />
+    <aura:attribute name="ressourceMaterielleField" type="String" default="RessourceMaterielle__c"
+        access="global" />
+    <!-- <aura:attribute name="ressourceMaterielleNameField" type="String" default="Name" access="global" />
+    <aura:attribute name="ressourceMaterielleRecordTypeField" type="String" default="RecordTypeId" access="global" /> -->
+    <aura:attribute name="borderfilterFromRessource" type="Boolean" default="true" access="global" />
+    <!-- <aura:attribute name="eventValidationField" type="String" default="Validation__c" access="global" />
+    <aura:attribute name="eventBackgroundColorField" type="String" default="CodeCouleur__c" access="global" />
+    <aura:attribute name="locationField" type="String" default="Lieu__c" access="global" /> -->
+    <aura:attribute name="splitEventsOnNonWorkedDays" type="Boolean" default="true" access="global" />
+    <aura:attribute name="previsionnelColor" type="String" default="#666666" access="global" />
+
+    <lightning:workspaceAPI aura:id="workspace" />
+
+    <aura:handler event="lightning:tabFocused" action="{!c.onTabFocused }" />
+
+
+    <div data-id="calendar" id="calendar" class="myCalendar"></div>
+    <div class="slds-backdrop" aura:id="backdrop"></div>
+
+    <!-- Le closeModal est utilisé pour fermer le modal lorsqu'on clique en dehors de la fenêtre. Pour éviter de fermer aussi lorsqu'on clique dans la fenêtre, on utilise stopPropagation sur le slds-modal__content -->
+    <div aura:id="lwcAffectation" class="slds-modal" onclick="{!c.closeModal}">
+        <div class="slds-modal__container">
+            <div class="slds-modal__header slds-modal__header_empty slds-var-m-around_small">
+                <lightning:buttonIcon iconName="utility:close" alternativeText="Close" size="large"
+                    variant="bare-inverse" class="slds-modal__close" />
+            </div>
+            <div class="slds-modal__content" onclick="{!c.stopPropagation}">
+                <c:affectationCreationLWC name="lwcAffectation" onclosingcreationmodal="{!c.closeModal}"
+                    onclosingcreationmodalandgotourl="{!c.closeModalAndGoToUrl}" recordData="{!v.recordData}"
+                    modalOpeningData="{!v.startDateTimeVal}" />
+            </div>
+            <div class="slds-modal__footer" style="display: none;"></div>
+        </div>
+    </div>
+
+</aura:component>

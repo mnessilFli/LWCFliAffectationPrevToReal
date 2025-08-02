@@ -1,0 +1,13 @@
+<template>
+    <!-- L’action s’affiche d’abord dans une petite fenêtre modale :
+         on montre un seul bouton, centré -->
+    <lightning-quick-action-panel header="Rapport prévisionnel">
+        <div class="slds-p-around_medium slds-align_absolute-center">
+            <lightning-button
+                label="Ouvrir le rapport complet"
+                variant="brand"
+                onclick={handleClick}>
+            </lightning-button>
+        </div>
+    </lightning-quick-action-panel>
+</template>

@@ -1,0 +1,102 @@
+<template>
+    <lightning-card class="card-container">
+        <!-- Titre -->
+        <div class="record-summary">
+            <h1 class="main-title">Transformer en Affectations Classiques</h1>
+            <p><span class="field-label">Tiers :</span> {currentTiers}</p>
+            <p><span class="field-label">Affaire :</span> {currentAffaire}</p>
+            <p><span class="field-label">Ressource Humaine :</span> {currentRessource}</p>
+            <p class="duration-field">
+                <span class="field-label">Durée Totale à Planifier :</span> 
+                <span class="duration-highlight">{currentDuree} jours</span>
+                <span class="duration-highlight">sur la période : {currentMonth} / {currentYear}</span>
+            </p>
+            <p class="duration-field">
+                <span class="field-label">Jours déjà planifiés :</span> 
+                <span class="duration-highlight">{scheduledDays} jours</span>
+            </p>
+            <p class="duration-field">
+                <span class="field-label">Total saisi :</span> 
+                <span class="duration-highlight">{totalPlannedDays} jours</span>
+            </p>
+            <p class="duration-field">
+                <span class="field-label">Restant à planifier :</span> 
+                <span class="duration-highlight">{remainingToPlan} jours</span>
+            </p>
+        </div>
+
+        <!-- Saisie des affectations -->
+        <div class="table-section">
+            <template for:each={lines} for:item="line">
+                <div key={line.id} class="line-row">
+                    <lightning-combobox
+                        name="ligneAffaire"
+                        label="Ligne de l'Affaire"
+                        value={line.ligneAffaire}
+                        options={affaireLines}
+                        data-id={line.id}
+                        onchange={handleLineChange}
+                        class="input-field">
+                    </lightning-combobox>
+
+                    <lightning-input
+                        type="date"
+                        name="startDate"
+                        label="Date de Début"
+                        value={line.startDate}
+                        data-id={line.id}
+                        onchange={handleLineChange}
+                        class="input-field">
+                    </lightning-input>
+
+                    <lightning-input
+                        type="number"
+                        name="duration"
+                        label="Durée (jours)"
+                        step="0.25"
+                        min="0.25"
+                        value={line.duration}
+                        data-id={line.id}
+                        onchange={handleLineChange}
+                        class="input-field">
+                    </lightning-input>
+
+                    <lightning-combobox
+                        name="quart"
+                        label="Heure de début"
+                        value={line.quart}
+                        options={quartOptions}
+                        data-id={line.id}
+                        onchange={handleLineChange}
+                        class="input-field">
+                    </lightning-combobox>
+
+                    <lightning-button-icon
+                        icon-name="utility:close"
+                        alternative-text="Supprimer Ligne"
+                        data-id={line.id}
+                        onclick={removeLine}
+                        class="delete-line-btn">
+                    </lightning-button-icon>
+                </div>
+            </template>
+
+            <!-- Ajouter une ligne -->
+            <lightning-button-icon
+                icon-name="utility:add"
+                alternative-text="Ajouter Ligne"
+                onclick={addNewLine}
+                class="add-line-btn">
+            </lightning-button-icon>
+        </div>
+
+        <!-- Bouton d'action -->
+        <div class="action-buttons">
+            <lightning-button
+                label="Transformer"
+                onclick={createAffectations}
+                class="primary-btn">
+            </lightning-button>
+        </div>
+    </lightning-card>
+</template>
