@@ -1,6 +1,6 @@
 
 
-import { LightningElement, api } from "lwc";
+import { LightningElement, api, wire } from "lwc";
 import { reduceErrors } from "c/ldsUtils";
 import { createRecord, updateRecord } from "lightning/uiRecordApi";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
@@ -38,7 +38,10 @@ import returnCorrectCurrentOrNextDate from "@salesforce/apex/ElapsedTime.returnC
 import getLieuGlobalPicklist from "@salesforce/apex/LookupController.getLieuGlobalPicklist";
 import getLieuFromRH from "@salesforce/apex/LookupController.getLieuFromRH";
 
+
+
 export default class HelloWorld extends LightningElement {
+
     // Permet de récupérer les données envoyées par affectationCalendar
     @api
     get recordData() {

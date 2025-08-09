@@ -1,5 +1,10 @@
 ({
   getRecordDataAndPlanningInit: function (component) {
+
+
+
+/* ----------------------------------------------------- */
+
     let self = this;
 
     let recordId = component.get("v.mainRecordId");
@@ -552,7 +557,7 @@
         // },
         firstDay: 1, // Le premier jour de la semaine est lundi
         defaultDate: moment().format("YYYY-MM-DD"),
-        defaultView: "agendaWeek",
+        defaultView: "month",
         navLinks: false, // can't click on the days anymore. Caused it to crash because no behaviour linked
         editable: true,
         eventDurationEditable: false, // Disabled because doens't want to be able to resize (https://fullcalendar.io/docs/v3/editable)

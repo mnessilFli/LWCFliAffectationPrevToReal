@@ -68,6 +68,10 @@
 
     <lightning:workspaceAPI aura:id="workspace" />
 
+
+
+
+
     <aura:handler event="lightning:tabFocused" action="{!c.onTabFocused }" />
 
 
@@ -89,5 +93,6 @@
             <div class="slds-modal__footer" style="display: none;"></div>
         </div>
     </div>
+    
 
 </aura:component>

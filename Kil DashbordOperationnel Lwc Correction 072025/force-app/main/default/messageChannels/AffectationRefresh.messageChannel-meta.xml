@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningMessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Ping déclenché après création ou mise à jour d’une affectation</description>
+    <isExposed>true</isExposed>
+
+    <!-- 1 champ « ping ».  Chaque champ est lui-même un bloc <lightningMessageFields>. -->
+    <lightningMessageFields>
+        <description>Signal de rafraîchissement – aucun payload nécessaire</description>
+        <fieldName>ping</fieldName>
+    </lightningMessageFields>
+
+    <masterLabel>AffectationRefresh</masterLabel>
+</LightningMessageChannel>
